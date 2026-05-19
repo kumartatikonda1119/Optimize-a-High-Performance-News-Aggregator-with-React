@@ -1,0 +1,11 @@
+:root {
+  --glass: rgba(255, 255, 255, 0.06);
+  --stroke: rgba(255, 255, 255, 0.08);
+  --focus: rgba(124, 92, 255, 0.45);
+}
+
+.theme-light {
+  --glass: rgba(10, 14, 20, 0.08);
+  --stroke: rgba(10, 14, 20, 0.12);
+  --focus: rgba(124, 92, 255, 0.3);
+}
