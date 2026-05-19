@@ -35,8 +35,7 @@ const buildFallbackArticles = (count) =>
   Array.from({ length: count }).map((_, index) => ({
     id: `fallback-${index + 1}`,
     title: `Sample briefing ${index + 1}`,
-    description:
-      "Placeholder briefing used when API keys are not configured.",
+    description: "Placeholder briefing used when API keys are not configured.",
     summary:
       "Configure API keys in .env to replace these placeholders with live news.",
     url: "https://news.ycombinator.com/",
