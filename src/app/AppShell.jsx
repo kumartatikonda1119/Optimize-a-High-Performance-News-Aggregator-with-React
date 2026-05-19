@@ -4,17 +4,14 @@ import {
   useMotionValueEvent,
   useScroll,
 } from "framer-motion";
-import { Suspense, lazy, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { usePreferencesStore } from "../store/preferencesStore.js";
 import { fadeUp } from "../animations/variants.js";
 import Navbar from "../components/Navbar.jsx";
 import HomePage from "./HomePage.jsx";
-
-const DiscoverPage = lazy(() => import("./DiscoverPage.jsx"));
-const DashboardPage = lazy(() => import("./DashboardPage.jsx"));
-const ArticleDetailDialog = lazy(
-  () => import("../components/ArticleDetailDialog.jsx"),
-);
+import DiscoverPage from "./DiscoverPage.jsx";
+import DashboardPage from "./DashboardPage.jsx";
+import ArticleDetailDialog from "../components/ArticleDetailDialog.jsx";
 
 const pages = {
   home: HomePage,
@@ -77,21 +74,15 @@ function AppShell() {
             exit={{ opacity: 0, y: 20 }}
             variants={fadeUp}
           >
-            <Suspense
-              fallback={<div className="text-white/60">Loading...</div>}
-            >
-              <Page onSelectArticle={setSelectedArticle} />
-            </Suspense>
+            <Page onSelectArticle={setSelectedArticle} />
           </motion.div>
         </AnimatePresence>
       </main>
 
-      <Suspense fallback={null}>
-        <ArticleDetailDialog
-          article={selectedArticle}
-          onClose={() => setSelectedArticle(null)}
-        />
-      </Suspense>
+      <ArticleDetailDialog
+        article={selectedArticle}
+        onClose={() => setSelectedArticle(null)}
+      />
     </div>
   );
 }

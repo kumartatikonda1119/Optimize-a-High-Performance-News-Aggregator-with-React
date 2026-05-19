@@ -69,16 +69,9 @@ function HomePage({ onSelectArticle }) {
             <Skeleton className="h-[360px] w-full" />
           ) : (
             <img
-              data-testid="hero-image"
               src={heroImageUrl}
-              srcSet={`${heroImageUrl} 640w, ${heroImageUrl} 1280w`}
-              sizes="(max-width: 1024px) 100vw, 520px"
-              width={1040}
-              height={720}
               alt={heroTitle}
               className="h-[360px] w-full rounded-2xl object-cover"
-              loading="eager"
-              fetchPriority="high"
             />
           )}
           <div className="mt-6 space-y-3">

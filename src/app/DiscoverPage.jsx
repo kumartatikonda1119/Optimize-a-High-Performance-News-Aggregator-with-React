@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import orderBy from "lodash/orderBy";
+import _ from "lodash";
 import { useNewsFeed } from "../hooks/useNewsFeed.js";
 import { useIntersection } from "../hooks/useIntersection.js";
 import { usePreferencesStore } from "../store/preferencesStore.js";
 import FiltersPanel from "../components/FiltersPanel.jsx";
 import ArticleCard from "../components/ArticleCard.jsx";
-import ArticleList from "../components/ArticleList.jsx";
 import LayoutSwitch from "../components/LayoutSwitch.jsx";
 import { Skeleton } from "../components/ui/skeleton.jsx";
 import InsightStrip from "../components/InsightStrip.jsx";
@@ -53,12 +52,12 @@ const buildFallbackArticles = (count) =>
 
 function sortArticles(articles, mode) {
   if (mode === "latest") {
-    return orderBy(articles, (article) => new Date(article.publishedAt), [
+    return _.orderBy(articles, (article) => new Date(article.publishedAt), [
       "desc",
     ]);
   }
   if (mode === "impact") {
-    return orderBy(articles, (article) => article.keywords?.length ?? 0, [
+    return _.orderBy(articles, (article) => article.keywords?.length ?? 0, [
       "desc",
     ]);
   }
@@ -147,59 +146,34 @@ function DiscoverPage({ onSelectArticle }) {
 
       <InsightStrip items={insights} />
 
-      {layout === "list" ? (
-        isLoading ? (
-          <div className="grid gap-6">
-            {Array.from({ length: 6 }).map((_, index) => (
-              <Skeleton key={index} className="h-60" />
-            ))}
-          </div>
+      <div
+        className={`grid gap-6 ${
+          layout === "masonry"
+            ? "columns-1 sm:columns-2 lg:columns-3"
+            : layout === "list"
+              ? "grid-cols-1"
+              : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+        }`}
+      >
+        {isLoading ? (
+          Array.from({ length: 9 }).map((_, index) => (
+            <Skeleton key={index} className="h-72" />
+          ))
         ) : articles.length ? (
-          <ArticleList
-            items={articles}
-            itemHeight={260}
-            getItemKey={(article) => article.id}
-            renderItem={(article) => (
-              <div className="rounded-3xl border border-white/10 bg-white/5">
-                <ArticleCard article={article} onSelect={onSelectArticle} />
-              </div>
-            )}
-          />
+          articles.map((article) => (
+            <div
+              key={article.id}
+              className={layout === "masonry" ? "mb-6 break-inside-avoid" : ""}
+            >
+              <ArticleCard article={article} onSelect={onSelectArticle} />
+            </div>
+          ))
         ) : (
-          <div className="rounded-3xl border border-white/10 bg-white/5 p-10 text-center text-white/60">
+          <div className="col-span-full rounded-3xl border border-white/10 bg-white/5 p-10 text-center text-white/60">
             No stories yet. Add API keys in .env to unlock the live feed.
           </div>
-        )
-      ) : (
-        <div
-          className={`grid gap-6 ${
-            layout === "masonry"
-              ? "columns-1 sm:columns-2 lg:columns-3"
-              : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-          }`}
-        >
-          {isLoading ? (
-            Array.from({ length: 9 }).map((_, index) => (
-              <Skeleton key={index} className="h-72" />
-            ))
-          ) : articles.length ? (
-            articles.map((article) => (
-              <div
-                key={article.id}
-                className={
-                  layout === "masonry" ? "mb-6 break-inside-avoid" : ""
-                }
-              >
-                <ArticleCard article={article} onSelect={onSelectArticle} />
-              </div>
-            ))
-          ) : (
-            <div className="col-span-full rounded-3xl border border-white/10 bg-white/5 p-10 text-center text-white/60">
-              No stories yet. Add API keys in .env to unlock the live feed.
-            </div>
-          )}
-        </div>
-      )}
+        )}
+      </div>
 
       <div ref={loadMoreRef} className="py-8 text-center text-sm text-white/50">
         {isFetchingNextPage
